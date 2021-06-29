@@ -24,6 +24,9 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprint(w, "请求路径为："+r.URL.Path)
 
+	//设置标头
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
 	if r.URL.Path == "/" {
 		fmt.Fprint(w, "<h1>Hello,这里是 goblogdf</h1>")
 	} else if r.URL.Path == "/about" {
