@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
+	"net/url"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/gorilla/mux"
 )
@@ -40,8 +43,6 @@ func articlesIndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func articlesStoreHandler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprint(w, "创建新的文章")
-
 	err := r.ParseForm()
 	if err != nil {
 		//解析错误，这里应该有错误处理
@@ -49,15 +50,83 @@ func articlesStoreHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//title := r.PostForm.Get("title")
-	//fmt.Fprintf(w, "POST PostForm: %v <br>", r.PostForm)
-	//fmt.Fprintf(w, "POST Form: %v <br>", r.Form)
-	//fmt.Fprintf(w, "title 的值为: %v", title)
+	title := r.PostFormValue("title")
+	body := r.PostFormValue("body")
 
-	fmt.Fprintf(w, "r.Form中title的值为：%v <br>", r.FormValue("title"))
-	fmt.Fprintf(w, "r.PostFrom中title的值为：%v <br>", r.PostFormValue("title"))
-	fmt.Fprintf(w, "r.Form中test的值为：%v <br>", r.FormValue("test"))
-	fmt.Fprintf(w, "r.PostForm中test的值为：%v <br>", r.PostFormValue("test"))
+	errors := make(map[string]string)
+
+	// 验证标题
+	if title == "" {
+		errors["title"] = "标题不能为空"
+	//} else if len(title) < 3 || len(title) > 40 {
+	} else if utf8.RuneCountInString(title) < 3 || utf8.RuneCountInString(title) > 40 {
+		errors["title"] = "标题长度需介于 3-40"
+	}
+
+	// 验证内容
+	if title == "" {
+		errors["body"] = "标题不能为空"
+	//} else if len(title) < 3 || len(title) > 40 {
+	} else if utf8.RuneCountInString(title) < 3 || utf8.RuneCountInString(title) > 40 {
+		errors["body"] = "内容长度需大于或等于 10 个字节"
+	}
+
+	if len(errors) == 0 {
+		fmt.Fprintf(w, "验证通过！<br>")
+		fmt.Fprintf(w, "title 的值为：%v <br>", title)
+		//fmt.Fprintf(w, "title 的长度为：%v <br>", len(title)) //长度 中文3个
+		fmt.Fprintf(w, "title 的长度为：%v <br>", utf8.RuneCountInString(title)) //长度 中文3个
+		fmt.Fprintf(w, "body 的值为：%v <br>", body)
+		//fmt.Fprintf(w, "body 的长度为：%v <br>", len(body)) //长度 中文3个
+		fmt.Fprintf(w, "body 的长度为：%v <br>", utf8.RuneCountInString (body))
+	} else {
+		//fmt.Fprintf(w, "有错误发生，errors的值为：%v <br>", errors)
+		html := `
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<title>创建文章 —— 我的技术博客</title>
+				<style type="text/css">.error {color: red;}</style>
+			</head>
+			<body>
+				<form action="{{ .URL }}" method="post">
+					<p><input type="text" name="title" value="{{ .Title }}"></p>
+					{{ with .Errors.title }}
+					<p class="error">{{ . }}</p>
+					{{ end }}
+					<p><textarea name="body" cols="30" rows="10">{{ .Body }}</textarea></p>
+					{{ with .Errors.body }}
+					<p class="error">{{ . }}</p>
+					{{ end }}
+					<p><button type="submit">提交</button></p>
+				</form>
+			</body>
+			</html>
+			`
+		storeURL, _ := router.Get("articles.store").URL()
+
+		//用以给模板文件传输变量时使用。
+		data := ArticlesFormData{
+			Title:  title,
+			Body:   body,
+			URL:    storeURL,
+			Errors: errors,
+		}
+		//接下来是构建 ArticlesFormData 里的数据，storeURL 是通过路由参数生成的 URL 路径。
+		tmpl, err := template.New("create-form").Parse(html)
+		if err != nil {
+			panic(err)
+		}
+
+		tmpl.Execute(w, data)
+	}
+}
+
+// ArticlesFormData 创建博文表单数据
+type ArticlesFormData struct {
+	Title, Body string
+	URL	*url.URL
+	Errors map[string]string
 }
 
 func forceHTMLMiddleware(next http.Handler) http.Handler  {
