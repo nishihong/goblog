@@ -18,6 +18,13 @@ import (
 	_ "github.com/go-sql-driver/mysql" //匿名导入
 )
 
+
+// Article  对应一条文章数据 声明了一个 Article 的 struct，用以存储从数据库里读出来的文章数据
+type Article struct {
+	Title, Body string
+	ID          int64
+}
+
 //.StrictSlash(true) 去掉最后一个斜杠的问题  把会POST请求编程GET请求
 //router := mux.NewRouter().StrictSlash(true)
 var router = mux.NewRouter()
@@ -97,7 +104,32 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func articlesShowHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	fmt.Fprint(w, "文章 ID："+id)
+
+	// 2. 读取对应的文章数据
+	article := Article{}
+	query := "SELECT * FROM articles WHERE id = ?"
+	// 将查询结果赋值到我们的 article struct 中，传参应与数据表字段的顺序保持一致。
+	err := db.QueryRow(query, id).Scan(&article.ID, &article.Title, &article.Body)
+
+	// 3. 如果出现错误
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// 3.1 数据未找到
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(w, "404 文章未找到")
+		} else {
+			// 3.2 数据库错误
+			checkError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprint(w, "500 服务器内部错误")
+		}
+	} else {
+		// 4. 读取成功，显示文章
+		tmpl, err := template.ParseFiles("goblog/resources/views/articles/show.gohtml")
+		checkError(err)
+
+		tmpl.Execute(w, article)
+	}
 }
 
 func articlesIndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -249,7 +281,7 @@ func articlesCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	initDB()
-	createTables()
+	//createTables()
 
 	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
