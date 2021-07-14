@@ -1,19 +1,67 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"github.com/go-sql-driver/mysql"
 	"html/template"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/gorilla/mux"
+
+	_ "github.com/go-sql-driver/mysql" //匿名导入
 )
 
 //.StrictSlash(true) 去掉最后一个斜杠的问题  把会POST请求编程GET请求
 //router := mux.NewRouter().StrictSlash(true)
 var router = mux.NewRouter()
+//设置了变量 结构体是 database/sql 包封装的一个数据库操作对象，包含了操作数据库的基本方法，通常情况下，我们把它理解为 连接池对象。
+var db *sql.DB
+
+//func init() {
+//	sql.Register("mysql", &MySQLDriver{})
+//}
+
+func initDB() {
+	var err error
+	// 设置数据库连接信息
+	config := mysql.Config{
+		User: "root",
+		Passwd: "root",
+		Addr:"127.0.0.1:3306",
+		Net:"tcp",
+		DBName:"goblog",
+		AllowNativePasswords: true,
+	}
+
+	//fmt.Println(config.FormatDSN())
+
+	// 准备数据库连接池
+	db, err = sql.Open("mysql", config.FormatDSN())
+	checkError(err)
+
+	//设置最大连接数 设置连接池最大打开数据库连接数，<= 0 表示无限制，默认为 0。
+	db.SetMaxIdleConns(25)
+	//设置最大空闲连接数
+	db.SetMaxIdleConns(25)
+	//设置每个链接的过期时间
+	db.SetConnMaxLifetime(5 * time.Minute)
+
+	//尝试链接，失败会报错
+	err = db.Ping()
+	checkError(err)
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -150,6 +198,7 @@ func articlesCreateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	initDB()
 
 	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
