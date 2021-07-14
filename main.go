@@ -27,6 +27,19 @@ var db *sql.DB
 //	sql.Register("mysql", &MySQLDriver{})
 //}
 
+//Go 语言中根据首字母的大小写来确定可以访问的权限。无论是函数名、方法名、常量、变量名还是结构体的名称，如果首字母大写，则可以被其他的包访问；如果首字母小写，则只能在本包中使用。可以简单的理解成，首字母大写是公有的，首字母小写是私有的。使用时，但凡不想作为公有方法提供，皆使用小写字母开头。
+func createTables() {
+	createArticlesSQL := `CREATE TABLE IF NOT EXISTS articles(
+    id bigint(20) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    title varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    body longtext COLLATE utf8mb4_unicode_ci
+	);`
+
+	//执行创建数据库表结构的语句。
+	_, err := db.Exec(createArticlesSQL)
+	checkError(err)
+}
+
 func initDB() {
 	var err error
 	// 设置数据库连接信息
@@ -199,6 +212,7 @@ func articlesCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	initDB()
+	createTables()
 
 	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
