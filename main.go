@@ -1,10 +1,10 @@
 package main
 
 import (
+	"ch35/goblog/bootstrap"
 	"ch35/goblog/pkg/database"
 	"ch35/goblog/pkg/logger"
 	"ch35/goblog/pkg/route"
-	"ch35/goblog/pkg/types"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -61,39 +61,6 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(w, "<h1>请求页面未找到 :(</h1><p>如有疑惑，请联系我们。</p>")
-}
-
-func articlesShowHandler(w http.ResponseWriter, r *http.Request) {
-	// 1. 获取 URL 参数
-	id := route.GetRouteVariable("id", r)
-
-	// 2. 读取对应的文章数据
-	article, err := getArticleByID(id)
-
-	// 3. 如果出现错误
-	if err != nil {
-		if err == sql.ErrNoRows {
-			// 3.1 数据未找到
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(w, "404 文章未找到")
-		} else {
-			// 3.2 数据库错误
-			logger.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(w, "500 服务器内部错误")
-		}
-	} else {
-		// 4. 读取成功，显示文章 Funcs() 注册函数
-		tmpl, err := template.New("show.gohtml").
-			Funcs(template.FuncMap{
-				"RouteName2URL": route.Name2URL,
-				"Int64ToString": types.Int64ToString,
-			}).
-			ParseFiles("goblog/resources/views/articles/show.gohtml")
-		logger.LogError(err)
-
-		tmpl.Execute(w, article)
-	}
 }
 
 func articlesIndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -281,7 +248,7 @@ func getArticleByID(id string) (Article, error) {
 func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. 获取 URL 参数
-	id := route.GetRouteVariable("id", r)
+	id := route.getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	article, err := getArticleByID(id)
@@ -316,7 +283,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. 获取 URL 参数
-	id := route.GetRouteVariable("id", r)
+	id := route.getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	_, err := getArticleByID(id)
@@ -384,7 +351,7 @@ func articlesUpdateHandler(w http.ResponseWriter, r *http.Request) {
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. 获取 URL 参数
-	id := route.GetRouteVariable("id", r)
+	id := route.getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	article, err := getArticleByID(id)
@@ -442,18 +409,18 @@ func (a Article) Delete() (rowsAffected int64, err error) {
 	return 0, nil
 }
 
+func getRouteVariable(parameterName string, r *http.Request) string {
+	vars := mux.Vars(r)
+	return vars[parameterName]
+}
+
 func main() {
 	database.Initialize()
 	db = database.DB
 
-	route.Initialize()
-	router = route.Router
-
-	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
-	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
+	router = bootstrap.SetupRoute()
 
 	//在有正则匹配的情况下，使用 : 区分。第一部分是名称，第二部分是正则表达式
-	router.HandleFunc("/articles/{id:[0-9]+}", articlesShowHandler).Methods("GET").Name("articles.show")
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
 	router.HandleFunc("/articles", articlesStoreHandler).Methods("POST").Name("articles.store")
 
@@ -462,9 +429,6 @@ func main() {
 	router.HandleFunc("/articles/{id:[0-9]+}/edit", articlesEditHandler).Methods("GET").Name("articles.edit")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesUpdateHandler).Methods("POST").Name("articles.update")
 	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).Methods("POST").Name("articles.delete")
-
-	// 自定义 404 页面
-	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
 	// 中间件：强制内容类型为HTML
 	router.Use(forceHTMLMiddleware)
