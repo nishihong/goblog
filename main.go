@@ -4,7 +4,6 @@ import (
 	"ch35/goblog/bootstrap"
 	"ch35/goblog/pkg/database"
 	"ch35/goblog/pkg/logger"
-	"ch35/goblog/pkg/route"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -248,7 +247,7 @@ func getArticleByID(id string) (Article, error) {
 func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. 获取 URL 参数
-	id := route.getRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	article, err := getArticleByID(id)
@@ -283,7 +282,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. 获取 URL 参数
-	id := route.getRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	_, err := getArticleByID(id)
@@ -351,7 +350,7 @@ func articlesUpdateHandler(w http.ResponseWriter, r *http.Request) {
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 1. 获取 URL 参数
-	id := route.getRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
 	article, err := getArticleByID(id)
