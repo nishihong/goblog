@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"ch35/goblog/pkg/route"
 	"ch35/goblog/routes"
 
 	"github.com/gorilla/mux"
@@ -10,5 +11,8 @@ import (
 func SetupRoute() *mux.Router {
 	router := mux.NewRouter()
 	routes.RegisterWebRoutes(router)
+
+	route.SetRoute(router)
+
 	return router
 }
