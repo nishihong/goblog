@@ -73,83 +73,6 @@ func validateArticleFormData(title string, body string) map[string]string {
 	return errors
 }
 
-func articlesStoreHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		//解析错误，这里应该有错误处理
-		fmt.Fprint(w, "请提供正确的数据！")
-		return
-	}
-
-	title := r.PostFormValue("title")
-	body := r.PostFormValue("body")
-
-	errors := validateArticleFormData(title, body)
-
-	if len(errors) == 0 {
-		lastInsertID, err := saveArticleToDB(title, body)
-		if lastInsertID > 0 {
-			//strconv 此包主要提供字符串和其他类型之间转换的函数
-			fmt.Fprint(w, "插入成功，ID 为"+strconv.FormatInt(lastInsertID, 10))
-		} else {
-			logger.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(w,  "500 服务器内部错误")
-		}
-	} else {
-		storeURL, _ := router.Get("articles.store").URL()
-
-		//用以给模板文件传输变量时使用。
-		data := ArticlesFormData{
-			Title:  title,
-			Body:   body,
-			URL:    storeURL,
-			Errors: errors,
-		}
-		//关于模板后缀名 .gohtml ，可以使用任意后缀名，这不会影响代码的运行。常见的 Go 模板后缀名有
-		tmpl, err := template.ParseFiles("goblog/resources/views/articles/create.gohtml")
-		if err != nil {
-			panic(err)
-		}
-
-		tmpl.Execute(w, data)
-	}
-}
-
-func saveArticleToDB(title string, body string) (int64, error) {
-
-	// 变量初始化
-	var (
-		id   int64
-		err  error
-		rs   sql.Result
-		stmt *sql.Stmt
-	)
-
-	// 1. 获取一个 prepare 声明语句
-	stmt, err = db.Prepare("INSERT INTO articles (title, body) VALUES(?,?)")
-	// 例行的错误检测
-	if err != nil {
-		return 0, err
-	}
-
-	// 2. 在此函数运行结束后关闭此语句，防止占用 SQL 连接
-	defer stmt.Close()
-
-	// 3. 执行请求，传参进入绑定的内容
-	rs, err = stmt.Exec(title, body)
-	if err != nil {
-		return 0, err
-	}
-
-	// 4. 插入成功的话，会返回自增 ID
-	if id, err = rs.LastInsertId(); id > 0 {
-		return id, nil
-	}
-
-	return 0, err
-}
-
 // ArticlesFormData 创建博文表单数据
 type ArticlesFormData struct {
 	Title, Body string
@@ -176,28 +99,6 @@ func removeTrailingSlash(next http.Handler) http.Handler {
 		// 2. 将请求传递下去
 		next.ServeHTTP(w, r)
 	})
-}
-
-//func articlesCreateHandler(w http.ResponseWriter, r *http.Request) {
-//	fmt.Fprint(w, "创建博文表单")
-//}
-func articlesCreateHandler(w http.ResponseWriter, r *http.Request) {
-	storeURL, _ := router.Get("articles.store").URL()
-
-	data := ArticlesFormData{
-		Title:  "",
-		Body:   "",
-		URL:    storeURL,
-		Errors: nil,
-	}
-
-	tmpl, err := template.ParseFiles("goblog/resources/views/articles/create.gohtml")
-
-	if err != nil {
-		panic(err)
-	}
-
-	tmpl.Execute(w, data)
 }
 
 func getArticleByID(id string) (Article, error) {
@@ -383,10 +284,6 @@ func main() {
 	router = bootstrap.SetupRoute()
 
 	//在有正则匹配的情况下，使用 : 区分。第一部分是名称，第二部分是正则表达式
-	router.HandleFunc("/articles", articlesStoreHandler).Methods("POST").Name("articles.store")
-
-	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
-
 	router.HandleFunc("/articles/{id:[0-9]+}/edit", articlesEditHandler).Methods("GET").Name("articles.edit")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesUpdateHandler).Methods("POST").Name("articles.update")
 	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).Methods("POST").Name("articles.delete")
