@@ -3,6 +3,7 @@ package user
 import (
 	"ch35/goblog/app/models"
 	"ch35/goblog/pkg/model"
+	"ch35/goblog/pkg/password"
 	"ch35/goblog/pkg/types"
 )
 
@@ -19,8 +20,8 @@ type User struct {
 }
 
 // ComparePassword 对比密码是否匹配
-func (u User) ComparePassword(password string) bool  {
-	return u.Password == password
+func (u User) ComparePassword(_password string) bool {
+	return password.CheckHash(_password, u.Password)
 }
 
 // Get 通过 ID 获取用户
