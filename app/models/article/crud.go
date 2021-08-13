@@ -11,8 +11,7 @@ func Get(idstr string) (Article, error) {
 	var article Article
 	id := types.StringToInt(idstr)
 
-	//First() 是 gorm.DB 提供的用以从结果集中获取第一条数据的查询方法
-	if err := model.DB.First(&article, id).Error; err != nil {
+	if err := model.DB.Preload("User").First(&article, id).Error; err != nil {
 		return article, err
 	}
 
@@ -22,7 +21,7 @@ func Get(idstr string) (Article, error) {
 // GetAll 获取全部文章
 func GetAll() ([]Article, error) {
 	var articles []Article
-	if err := model.DB.Find(&articles).Error; err != nil {
+	if err := model.DB.Debug().Preload("User").Find(&articles).Error; err != nil {
 		return articles, err
 	}
 	return articles, nil

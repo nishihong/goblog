@@ -44,3 +44,8 @@ func GetByEmail(email string) (User, error) {
 
 	return user, nil
 }
+
+// Link 方法用来生成用户链接
+func (u User) Link() string {
+	return ""
+}
