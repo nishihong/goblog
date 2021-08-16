@@ -3,7 +3,10 @@ package article
 import (
 	"ch35/goblog/pkg/logger"
 	"ch35/goblog/pkg/model"
+	"ch35/goblog/pkg/pagination"
+	"ch35/goblog/pkg/route"
 	"ch35/goblog/pkg/types"
+	"net/http"
 )
 
 // Get 通过 ID 获取文章
@@ -16,15 +19,6 @@ func Get(idstr string) (Article, error) {
 	}
 
 	return article, nil
-}
-
-// GetAll 获取全部文章
-func GetAll() ([]Article, error) {
-	var articles []Article
-	if err := model.DB.Debug().Preload("User").Find(&articles).Error; err != nil {
-		return articles, err
-	}
-	return articles, nil
 }
 
 // Create 创建文章，通过 article.ID 来判断是否创建成功
@@ -67,4 +61,21 @@ func GetByUserID(uid string) ([]Article, error) {
 		return articles, err
 	}
 	return articles, nil
+}
+
+// GetAll 获取全部文章
+func GetAll(r *http.Request, perPage int) ([]Article, pagination.ViewData, error) {
+
+	// 1. 初始化分页实例
+	db := model.DB.Model(Article{}).Order("created_at desc")
+	_pager := pagination.New(r, db, route.Name2URL("articles.index"), perPage)
+
+	// 2. 获取视图数据
+	viewData := _pager.Paging()
+
+	// 3. 获取数据
+	var articles []Article
+	_pager.Results(&articles)
+
+	return articles, viewData, nil
 }
