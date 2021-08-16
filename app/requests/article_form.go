@@ -15,6 +15,9 @@ func ValidateArticleForm(data article.Article) map[string][]string {
 		//"body":  []string{"required", "min:10"},
 		"title": []string{ "min:3", "max:40"},
 		"body":  []string{ "min:10"},
+
+		//"title": []string{"required", "min_cn:3", "max_cn:40"}, //????requered 不知道为什么不行
+		//"body":  []string{"required", "min_cn:10"},
 	}
 
 	// 2. 定制错误消息
