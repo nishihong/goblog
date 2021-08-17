@@ -11,6 +11,7 @@ import (
 type Category struct {
 	models.BaseModel
 
+	//ID uint64
 	Name string `gorm:"type:varchar(255);not null;" valid:"name"`
 }
 

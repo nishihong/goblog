@@ -70,6 +70,8 @@ func (ac *ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 	// 2. 读取对应的文章数据
 	article, err := article.Get(id)
 
+	//fmt.Println(article.CategoryId)
+
 	// 3. 如果出现错误
 	if err != nil {
 		ac.ResponseForSQLError(w, err)
@@ -86,7 +88,7 @@ func (ac *ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 func (ac *ArticlesController) Index(w http.ResponseWriter, r *http.Request) {
 
 	// 1. 获取结果集
-	articles, pagerData, err := article.GetAll(r, 2)
+	articles, pagerData, err := article.GetAll(r, 3)
 
 	if err != nil {
 		ac.ResponseForSQLError(w, err)
@@ -108,6 +110,8 @@ func (ac *ArticlesController) Edit(w http.ResponseWriter, r *http.Request) {
 
 	// 2. 读取对应的文章数据
 	_article, err := article.Get(id)
+
+	//fmt.Println(_article.CategoryID)
 
 	// 3. 如果出现错误
 	if err != nil {
@@ -149,6 +153,9 @@ func (ac *ArticlesController) Update(w http.ResponseWriter, r *http.Request) {
 			// 4.1 表单验证
 			_article.Title = r.PostFormValue("title")
 			_article.Body = r.PostFormValue("body")
+			//_article.CategoryID = r.PostFormValue("category_id") //????参数类型匹配不上
+			//_article.CategoryID = r.Form.Get("category_id")
+			//fmt.Println(_article.CategoryID)
 
 			errors := requests.ValidateArticleForm(_article)
 

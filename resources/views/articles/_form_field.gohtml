@@ -10,6 +10,23 @@
         {{ end }}
     </div>
 
+{{/*    <div class="form-group mt-3">*/}}
+{{/*        <label for="body">分类</label>*/}}
+{{/*        <select name="category_id" class="form-control" autocomplete="off">*/}}
+{{/*            <option value="">请选择</option>*/}}
+{{/*            {{ $categoryID := .Article.CategoryID }}*/}}
+{{/*            {{ range $key, $category := .Categories }}*/}}
+{{/*                <option value="{{ $category.ID }}" {{if eq $category.ID $categoryID}} selected="selected" {{ end }}>{{ $category.Name }} </option>*/}}
+{{/*            {{ end }}*/}}
+{{/*        </select>*/}}
+
+{{/*        {{ with .Errors.category }}*/}}
+{{/*            <div class="invalid-feedback">*/}}
+{{/*                {{ . }}*/}}
+{{/*            </div>*/}}
+{{/*        {{ end }}*/}}
+{{/*    </div>*/}}
+
     <div class="form-group mt-3">
         <label for="body">内容</label>
         <textarea name="body" cols="30" rows="10" class="form-control {{if .Errors.body }}is-invalid {{end}}">{{ .Article.Body }}</textarea>

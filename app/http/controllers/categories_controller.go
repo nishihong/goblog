@@ -59,7 +59,7 @@ func (cc *CategoriesController) Show(w http.ResponseWriter, r *http.Request) {
 	_category, err := category.Get(id)
 
 	// 3. 获取结果集
-	articles, pagerData, err := article.GetByCategoryID(_category.GetStringID(), r, 2)
+	articles, pagerData, err := article.GetByCategoryID(_category.GetStringID(), r, 3)
 
 	if err != nil {
 		cc.ResponseForSQLError(w, err)

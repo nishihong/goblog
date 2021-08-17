@@ -15,6 +15,7 @@ func ValidateArticleForm(data article.Article) map[string][]string {
 		//"body":  []string{"required", "min:10"},
 		"title": []string{ "min:3", "max:40"},
 		"body":  []string{ "min:10"},
+		"category_id":  []string{"required"},
 
 		//"title": []string{"required", "min_cn:3", "max_cn:40"}, //????requered 不知道为什么不行
 		//"body":  []string{"required", "min_cn:10"},
@@ -30,6 +31,9 @@ func ValidateArticleForm(data article.Article) map[string][]string {
 		"body": []string{
 			"required:文章内容为必填项",
 			"min:长度需大于 10",
+		},
+		"category_id": []string{
+			"required:分类为必填项",
 		},
 	}
 
