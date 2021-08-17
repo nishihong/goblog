@@ -1,7 +1,7 @@
 package requests
 
 import (
-	"ch35/goblog/pkg/model"
+	"goblog/pkg/model"
 	"errors"
 	"fmt"
 	"strconv"

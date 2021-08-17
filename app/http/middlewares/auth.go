@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"ch35/goblog/pkg/auth"
-	"ch35/goblog/pkg/flash"
+	"goblog/pkg/auth"
+	"goblog/pkg/flash"
 	"net/http"
 )
 

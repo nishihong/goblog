@@ -1,7 +1,7 @@
 package config
 
 import (
-	"ch35/goblog/pkg/config"
+	"goblog/pkg/config"
 )
 
 func init() {

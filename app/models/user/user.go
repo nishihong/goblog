@@ -1,11 +1,11 @@
 package user
 
 import (
-	"ch35/goblog/app/models"
-	"ch35/goblog/pkg/model"
-	"ch35/goblog/pkg/password"
-	"ch35/goblog/pkg/route"
-	"ch35/goblog/pkg/types"
+	"goblog/app/models"
+	"goblog/pkg/model"
+	"goblog/pkg/password"
+	"goblog/pkg/route"
+	"goblog/pkg/types"
 )
 
 // User 用户模型

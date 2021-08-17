@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"ch35/goblog/pkg/flash"
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/flash"
+	"goblog/pkg/logger"
 	"fmt"
 	"net/http"
 

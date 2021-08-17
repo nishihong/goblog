@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"ch35/goblog/app/models/user"
-	"ch35/goblog/pkg/session"
+	"goblog/app/models/user"
+	"goblog/pkg/session"
 	"errors"
 
 	"gorm.io/gorm"

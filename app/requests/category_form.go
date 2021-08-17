@@ -1,7 +1,7 @@
 package requests
 
 import (
-	"ch35/goblog/app/models/category"
+	"goblog/app/models/category"
 	"github.com/thedevsaddam/govalidator"
 )
 

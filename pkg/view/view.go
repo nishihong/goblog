@@ -1,12 +1,12 @@
 package view
 
 import (
-	"ch35/goblog/app/models/category"
-	"ch35/goblog/app/models/user"
-	"ch35/goblog/pkg/auth"
-	"ch35/goblog/pkg/flash"
-	"ch35/goblog/pkg/logger"
-	"ch35/goblog/pkg/route"
+	"goblog/app/models/category"
+	"goblog/app/models/user"
+	"goblog/pkg/auth"
+	"goblog/pkg/flash"
+	"goblog/pkg/logger"
+	"goblog/pkg/route"
 	"html/template"
 	"io"
 	"path/filepath"

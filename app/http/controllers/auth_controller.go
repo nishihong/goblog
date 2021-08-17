@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"ch35/goblog/app/models/user"
-	"ch35/goblog/app/requests"
-	"ch35/goblog/pkg/auth"
-	"ch35/goblog/pkg/flash"
-	"ch35/goblog/pkg/view"
+	"goblog/app/models/user"
+	"goblog/app/requests"
+	"goblog/pkg/auth"
+	"goblog/pkg/flash"
+	"goblog/pkg/view"
 	"fmt"
 	"net/http"
 )

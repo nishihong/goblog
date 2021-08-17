@@ -1,8 +1,8 @@
 package category
 
 import (
-	"ch35/goblog/pkg/logger"
-	"ch35/goblog/pkg/model"
+	"goblog/pkg/logger"
+	"goblog/pkg/model"
 )
 
 // Create 创建分类，通过 category.ID 来判断是否创建成功

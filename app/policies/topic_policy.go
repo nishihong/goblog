@@ -1,8 +1,8 @@
 package policies
 
 import (
-	"ch35/goblog/app/models/article"
-	"ch35/goblog/pkg/auth"
+	"goblog/app/models/article"
+	"goblog/pkg/auth"
 )
 
 // CanModifyArticle 是否允许修改话题

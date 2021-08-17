@@ -1,15 +1,15 @@
 package article
 
 import (
-	"ch35/goblog/app/models"
-	"ch35/goblog/app/models/category"
-	"ch35/goblog/app/models/user"
-	"ch35/goblog/pkg/model"
-	"ch35/goblog/pkg/pagination"
+	"goblog/app/models"
+	"goblog/app/models/category"
+	"goblog/app/models/user"
+	"goblog/pkg/model"
+	"goblog/pkg/pagination"
 	"net/http"
 
-	//"ch35/goblog/pkg/logger"
-	"ch35/goblog/pkg/route"
+	//"goblog/pkg/logger"
+	"goblog/pkg/route"
 )
 
 // Article 文章模型

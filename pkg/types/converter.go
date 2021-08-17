@@ -1,7 +1,7 @@
 package types
 
 import (
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/logger"
 	"strconv"
 )
 

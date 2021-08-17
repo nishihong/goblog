@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"ch35/goblog/pkg/route"
-	"ch35/goblog/routes"
+	"goblog/pkg/route"
+	"goblog/routes"
 
 	"github.com/gorilla/mux"
 )

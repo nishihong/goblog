@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"ch35/goblog/pkg/session"
+	"goblog/pkg/session"
 	"net/http"
 )
 

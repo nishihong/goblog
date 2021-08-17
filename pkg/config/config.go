@@ -1,7 +1,7 @@
 package config
 
 import (
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/logger"
 
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"

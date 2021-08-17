@@ -1,8 +1,8 @@
 package model
 
 import (
-	"ch35/goblog/pkg/config"
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/config"
+	"goblog/pkg/logger"
 	"fmt"
 
 	"gorm.io/gorm"

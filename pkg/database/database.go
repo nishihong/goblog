@@ -1,7 +1,7 @@
 package database
 
 import (
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/logger"
 	"database/sql"
 	"time"
 

@@ -1,8 +1,8 @@
 package session
 
 import (
-	"ch35/goblog/pkg/config"
-	"ch35/goblog/pkg/logger"
+	"goblog/pkg/config"
+	"goblog/pkg/logger"
 	"net/http"
 
 	"github.com/gorilla/sessions"

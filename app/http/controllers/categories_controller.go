@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"ch35/goblog/app/models/article"
-	"ch35/goblog/app/models/category"
-	"ch35/goblog/app/requests"
-	"ch35/goblog/pkg/route"
-	"ch35/goblog/pkg/view"
+	"goblog/app/models/article"
+	"goblog/app/models/category"
+	"goblog/app/requests"
+	"goblog/pkg/route"
+	"goblog/pkg/view"
 	"fmt"
 	"net/http"
 )

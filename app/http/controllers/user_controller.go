@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"ch35/goblog/app/models/article"
-	"ch35/goblog/app/models/user"
-	"ch35/goblog/pkg/logger"
-	"ch35/goblog/pkg/route"
-	"ch35/goblog/pkg/view"
+	"goblog/app/models/article"
+	"goblog/app/models/user"
+	"goblog/pkg/logger"
+	"goblog/pkg/route"
+	"goblog/pkg/view"
 	"fmt"
 	"net/http"
 )
@@ -23,6 +23,7 @@ func (uc *UserController) Show(w http.ResponseWriter, r *http.Request) {
 
 	// 2. 读取对应的文章数据
 	_user, err := user.Get(id)
+	//fmt.Println(id)
 
 	// 3. 如果出现错误
 	if err != nil {

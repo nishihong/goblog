@@ -1,10 +1,10 @@
 package main
 
 import (
-	"ch35/goblog/app/http/middlewares"
-	"ch35/goblog/bootstrap"
-	"ch35/goblog/config"
-	c "ch35/goblog/pkg/config"
+	"goblog/app/http/middlewares"
+	"goblog/bootstrap"
+	"goblog/config"
+	c "goblog/pkg/config"
 	"net/http"
 )
 

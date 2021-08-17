@@ -1,7 +1,7 @@
 package flash
 
 import (
-	"ch35/goblog/pkg/session"
+	"goblog/pkg/session"
 	"encoding/gob"
 )
 
